@@ -25,7 +25,7 @@ const fnHandler = {
 // pointer-handling example
 let object = { _ptr: 1 };
 let array = { _ptr: 2 };
-let fn = { _ptr: 2 };
+let fn = { _ptr: 3 };
 
 const po = create(object, objectHandler);
 const pa = create(array, arrayHandler, ARRAY);
