@@ -1,0 +1,29 @@
+{
+  "name": "weak-proxy",
+  "version": "0.0.0",
+  "main": "index.js",
+  "module": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "keywords": [
+    "WeakRef",
+    "Proxy"
+  ],
+  "author": "Andrea Giammarchi",
+  "license": "MIT",
+  "description": "Utility to create weakly referenced proxies",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/weak-proxy.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/weak-proxy/issues"
+  },
+  "homepage": "https://github.com/WebReflection/weak-proxy#readme"
+}
