@@ -14,11 +14,14 @@ const arrayHandler = {
   }
 };
 const fnHandler = {
+  ...objectHandler,
   apply(target, self, args) {
-    return Reflect.apply(target, self, args);
+    const fn = retrieve_foreign_callback(target._ptr);
+    return Reflect.apply(fn, self, args);
   },
   construct(target, ...rest) {
-    return Reflect.construct(target, ...rest);
+    const Class = retrieve_foreign_class(target._ptr);
+    return Reflect.construct(Class, ...rest);
   }
 };
 
