@@ -17,10 +17,20 @@ const arHandler = {
   getPrototypeOf: () => Array.prototype,
   getOwnPropertyDescriptor(target, key) {
     return key === 'length' ?
-      { configurable: false, writable: true, value: 0 } :
+      { configurable: false, writable: true, value: 1 } :
       Reflect.getOwnPropertyDescriptor(target, key)
     ;
   },
+  // mostly for testing purposes
+  get(target, key) {
+    if (Array.isArray(target))
+      return Reflect.get(target, key);
+    if (key === 'length')
+      return this.getOwnPropertyDescriptor(target, key).value;
+    if (key === '_')
+      return objHandler.get(target, key);
+    return target._;
+  }
 };
 
 const fnHandler = {
@@ -46,7 +56,9 @@ try {
 console.assert(Array.isArray(par));
 console.assert(par instanceof Array);
 console.assert(Reflect.ownKeys(par).length === 1);
+console.assert(par.length === 1);
 console.assert(Reflect.getOwnPropertyDescriptor(par, 'nope') === void 0);
+console.assert(par[0]);
 console.assert(typeof pfn === 'function');
 console.assert(pob._ === WeakProxy.OBJECT);
 console.assert(par._ === WeakProxy.ARRAY);
@@ -90,12 +102,11 @@ ar = WeakProxy.create([1, 2, 3], arHandler);
 console.assert(ar.length === 3);
 console.assert(ar[1] === 2);
 
-fn = WeakProxy.create(function (a, b) { return Object(a + b); }, {
-  apply: Reflect.apply,
-  construct: Reflect.construct,
-});
+fn = WeakProxy.create(function (a, b) { return Object(a + b); }, {});
 console.assert(fn(1, 2) == 3);
+console.assert(fn(1, 2) !== 3);
 console.assert(new fn(1, 2) == 3);
+console.assert(new fn(1, 2) !== 3);
 
 await time(500);
 
