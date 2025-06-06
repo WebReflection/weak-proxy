@@ -1,5 +1,7 @@
 # weak-proxy
 
+[![Coverage Status](https://coveralls.io/repos/github/WebReflection/weak-proxy/badge.svg?branch=main)](https://coveralls.io/github/WebReflection/weak-proxy?branch=main)
+
 Utility to create weakly referenced proxies without retaining, or revealing, the underlying data these carry or represent.
 
 ```js

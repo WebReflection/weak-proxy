@@ -20,10 +20,14 @@
     "url": "git+https://github.com/WebReflection/weak-proxy.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "coverage": "mkdir -p ./coverage; c8 report --reporter=text-lcov > ./coverage/lcov.info",
+    "test": "c8 node --expose-gc coverage.js"
   },
   "bugs": {
     "url": "https://github.com/WebReflection/weak-proxy/issues"
   },
-  "homepage": "https://github.com/WebReflection/weak-proxy#readme"
+  "homepage": "https://github.com/WebReflection/weak-proxy#readme",
+  "devDependencies": {
+    "c8": "^10.1.3"
+  }
 }

@@ -1,4 +1,7 @@
 const { isArray } = Array;
+const reflect = Reflect.ownKeys(Reflect).filter(
+  key => typeof key === 'string'
+);
 
 export const OBJECT = 1;
 export const ARRAY = 2;
@@ -31,11 +34,13 @@ const raise = message => {
 // each type requires a different guard due to the different deref functions
 const set = (wm, handler, deref) => {
   const guarded = {};
-  for (const key in handler) {
-    const method = handler[key];
-    if (typeof method === 'function') {
-      guarded[key] = (ref, ..._) => method.call(handler, deref(ref), ..._);
-    }
+  for (let i = 0; i < reflect.length; i++) {
+    const key = reflect[i];
+    const method = handler[key] || Reflect[key];
+    guarded[key] = function () {
+      arguments[0] = deref(arguments[0]);
+      return method.apply(handler, arguments);
+    };
   }
   wm.set(handler, guarded);
   return guarded;
