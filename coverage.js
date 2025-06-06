@@ -2,6 +2,7 @@ import * as WeakProxy from './index.js';
 
 const time = ms => new Promise($ => setTimeout($, ms));
 
+// Object handler example
 const objHandler = {
   get: (target, prop) => {
     return target[prop];

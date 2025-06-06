@@ -7,14 +7,36 @@ Utility to create weakly referenced proxies without retaining, or revealing, the
 ```js
 import { OBJECT, ARRAY, FUNCTION, create } from 'weak-proxy';
 
-// handlers for the 3 kind (or 2: OBJECT & FUNCTION)
-const objectHandler = {};
-const arrayHandler = {
-  ...objectHandler,
-  ownKeys(target) {
-    return ['length'];
-  }
+// Handler examples: if invoked, the `target` is the proxied reference
+
+// Object handler
+const objectHandler = {
+  get(target, prop) {
+    return retrieve_foreign_field(target._ptr, prop);
+  },
 };
+
+// Array handler also for non-array references
+const arrayHandler = {
+  // needed to pass common array checks/tests
+  // when the weakly proxied reference is *not* an array
+  ownKeys: () => ['length'],
+  getPrototypeOf: () => Array.prototype,
+  getOwnPropertyDescriptor(target, key) {
+    return key === 'length' ? this._length(target) : this._index(target, i);
+  },
+  // helpers for the getOwnPropertyDescriptor case
+  _length({ _ptr }) {
+    const value retrieve_foreign_list_len(_ptr);
+    return { value, writable: true, enumerable: false, configurable: false };
+  },
+  _index({ _ptr }, i) {
+    const value retrieve_foreign_field(_ptr, i);
+    return { value, writable: true, enumerable: true, configurable: true };
+  },
+};
+
+// Function handler also for non function references
 const fnHandler = {
   ...objectHandler,
   apply(target, self, args) {
@@ -27,7 +49,7 @@ const fnHandler = {
   }
 };
 
-// pointer-handling example
+// pointer-handling example -> Proxy `target`
 let object = { _ptr: 1 };
 let array = { _ptr: 2 };
 let fn = { _ptr: 3 };
@@ -53,3 +75,5 @@ fr.register(po, object._ptr);
 fr.register(pa, array._ptr);
 fr.register(pf, fn._ptr);
 ```
+
+See [coveraje.js](./coverage.js) to concretely check everything works as expected.
